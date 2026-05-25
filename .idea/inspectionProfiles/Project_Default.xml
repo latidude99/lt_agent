@@ -1,0 +1,29 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="VulnerableLibrariesLocal" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="isIgnoringEnabled" value="true" />
+      <option name="ignoredModules">
+        <list>
+          <option value="lt_agent" />
+          <option value="lt_agent" />
+          <option value="lt_agent" />
+        </list>
+      </option>
+      <option name="ignoredPackages">
+        <list>
+          <option value="org.bouncycastle:bcpkix-jdk18on:1.82" />
+          <option value="org.apache.tomcat.embed:tomcat-embed-core:11.0.15" />
+          <option value="org.springframework:spring-web:7.0.3" />
+        </list>
+      </option>
+      <option name="ignoredReasons">
+        <list>
+          <option value="Other" />
+          <option value="Not exploitable" />
+          <option value="Not exploitable" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

@@ -1,0 +1,32 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "text": "AI learns from data to find patterns and make predictions.",
+            "thoughtSignature": "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"
+          }
+        ],
+        "role": "model"
+      },
+      "finishReason": "STOP",
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 8,
+    "candidatesTokenCount": 11,
+    "totalTokenCount": 400,
+    "promptTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 8
+      }
+    ],
+    "thoughtsTokenCount": 381,
+    "serviceTier": "standard"
+  },
+  "modelVersion": "gemini-3.5-flash",
+  "responseId": "fasUap-xCpzNkdUP2vKnMQ"
+}
