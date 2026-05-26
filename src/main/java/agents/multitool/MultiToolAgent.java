@@ -31,9 +31,12 @@ public class MultiToolAgent {
     public static BaseAgent ROOT_AGENT = null;
 
     public static BaseAgent initAgent() {
-        // Ensure API key is present before building the LLM client to avoid NPE inside vendor library
+        // Prefer explicit env var, fall back to reading .env via Dotenv (avoids reflection/setEnv issues in modular JVMs)
+        Dotenv dotenv = Dotenv.configure().ignoreIfMalformed().ignoreIfMissing().load();
         String gKey = System.getenv("GOOGLE_API_KEY");
+        if (gKey == null || gKey.isBlank()) gKey = dotenv.get("GOOGLE_API_KEY");
         String gem = System.getenv("GEMINI_API_KEY");
+        if (gem == null || gem.isBlank()) gem = dotenv.get("GEMINI_API_KEY");
         String apiKey = (gKey != null && !gKey.isBlank()) ? gKey : gem;
         if (apiKey == null || apiKey.isBlank()) {
             throw new IllegalArgumentException("Set GOOGLE_API_KEY or GEMINI_API_KEY in the environment before running");
@@ -106,20 +109,8 @@ public class MultiToolAgent {
 
     public static void main(String[] args) throws Exception {
 
-        // Load .env and inject GOOGLE_API_KEY / GEMINI_API_KEY into the process environment
+        // Load .env (no reflection injection) — initAgent will read dotenv as a fallback for API keys
         Dotenv dotenv = Dotenv.configure().ignoreIfMalformed().ignoreIfMissing().load();
-        Map<String, String> toSet = new HashMap<>();
-        String gKey = dotenv.get("GOOGLE_API_KEY");
-        if (gKey != null && !gKey.isBlank()) toSet.put("GOOGLE_API_KEY", gKey);
-        String gem = dotenv.get("GEMINI_API_KEY");
-        if (gem != null && !gem.isBlank()) toSet.put("GEMINI_API_KEY", gem);
-        if (!toSet.isEmpty()) {
-            try {
-                setEnv(toSet);
-            } catch (Exception e) {
-                System.err.println("Warning: failed to inject .env variables: " + e.getMessage());
-            }
-        }
         ROOT_AGENT = initAgent();
 
         InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT);

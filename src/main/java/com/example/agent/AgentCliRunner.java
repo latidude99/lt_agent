@@ -19,28 +19,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class AgentCliRunner {
 
     public static void main(String[] args) {
-        // Load .env and inject GOOGLE_API_KEY / GEMINI_API_KEY into the process environment
+        // Load .env (no reflection injection). HelloTimeAgent.getRootAgent() will use dotenv as a fallback.
         Dotenv dotenv = Dotenv.configure().ignoreIfMalformed().ignoreIfMissing().load();
-        Map<String, String> toSet = new HashMap<>();
-        String gKey = dotenv.get("GOOGLE_API_KEY");
-        if (gKey != null && !gKey.isBlank()) toSet.put("GOOGLE_API_KEY", gKey);
-        String gem = dotenv.get("GEMINI_API_KEY");
-        if (gem != null && !gem.isBlank()) toSet.put("GEMINI_API_KEY", gem);
-        if (!toSet.isEmpty()) {
-            try {
-                setEnv(toSet);
-            } catch (Exception e) {
-                System.err.println("Warning: failed to inject .env variables: " + e.getMessage());
-            }
-        }
-
-        // Ensure an API key is present to avoid an NPE inside the vendor client
-        String gKeyEnv = System.getenv("GOOGLE_API_KEY");
-        String gemEnv = System.getenv("GEMINI_API_KEY");
-        String apiKeyEnv = (gKeyEnv != null && !gKeyEnv.isBlank()) ? gKeyEnv : gemEnv;
-        if (apiKeyEnv == null || apiKeyEnv.isBlank()) {
-            throw new IllegalArgumentException("Set GOOGLE_API_KEY or GEMINI_API_KEY in the environment before running");
-        }
 
         RunConfig runConfig = RunConfig.builder().build();
         InMemoryRunner runner = new InMemoryRunner(HelloTimeAgent.getRootAgent());
