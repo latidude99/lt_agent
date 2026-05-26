@@ -21,7 +21,8 @@ public class HelloTimeAgent {
         if (gem == null || gem.isBlank()) gem = dotenv.get("GEMINI_API_KEY");
         String apiKey = (gKey != null && !gKey.isBlank()) ? gKey : gem;
         if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalArgumentException("Set GOOGLE_API_KEY or GEMINI_API_KEY in the environment before running");
+            System.err.println("Warning: GOOGLE_API_KEY and GEMINI_API_KEY not found — HelloTimeAgent will not enable LLM features.");
+            return null;
         }
 
         return LlmAgent.builder()

@@ -39,7 +39,8 @@ public class MultiToolAgent {
         if (gem == null || gem.isBlank()) gem = dotenv.get("GEMINI_API_KEY");
         String apiKey = (gKey != null && !gKey.isBlank()) ? gKey : gem;
         if (apiKey == null || apiKey.isBlank()) {
-            throw new IllegalArgumentException("Set GOOGLE_API_KEY or GEMINI_API_KEY in the environment before running");
+            System.err.println("Warning: GOOGLE_API_KEY and GEMINI_API_KEY not found — running in local-only mode.\nSet GOOGLE_API_KEY or GEMINI_API_KEY to enable LLM features.");
+            return null; // Caller will run a local-only loop instead of using the vendor LLM
         }
 
         return LlmAgent.builder()
@@ -112,6 +113,19 @@ public class MultiToolAgent {
         // Load .env (no reflection injection) — initAgent will read dotenv as a fallback for API keys
         Dotenv dotenv = Dotenv.configure().ignoreIfMalformed().ignoreIfMissing().load();
         ROOT_AGENT = initAgent();
+
+        if (ROOT_AGENT == null) {
+            // Local-only mode: print helpful message instead of invoking vendor LLM
+            try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
+                while (true) {
+                    System.out.print("\nYou Lati > ");
+                    String userInput = scanner.nextLine();
+                    if ("quit".equalsIgnoreCase(userInput)) break;
+                    System.out.println("\nAgent > Missing API key. Set GOOGLE_API_KEY or GEMINI_API_KEY (or copy .env.example to .env) to enable LLM features.");
+                }
+            }
+            return;
+        }
 
         InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT);
 
