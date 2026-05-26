@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class HelloTimeAgent {
 
-    public static BaseAgent ROOT_AGENT = initAgent();
+    public static BaseAgent ROOT_AGENT = null;
 
     private static BaseAgent initAgent() {
         return LlmAgent.builder()
@@ -22,6 +22,13 @@ public class HelloTimeAgent {
                 .model("gemini-flash-latest")
                 .tools(FunctionTool.create(HelloTimeAgent.class, "getCurrentTime"))
                 .build();
+    }
+
+    public static synchronized BaseAgent getRootAgent() {
+        if (ROOT_AGENT == null) {
+            ROOT_AGENT = initAgent();
+        }
+        return ROOT_AGENT;
     }
 
     /** Mock tool implementation */

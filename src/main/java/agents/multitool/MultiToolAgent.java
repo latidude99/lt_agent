@@ -28,7 +28,7 @@ public class MultiToolAgent {
     private static String NAME = "multi_tool_agent";
 
     // The run your agent with Dev UI, the ROOT_AGENT should be a global public static final variable.
-    public static final BaseAgent ROOT_AGENT = initAgent();
+    public static BaseAgent ROOT_AGENT = null;
 
     public static BaseAgent initAgent() {
         // Ensure API key is present before building the LLM client to avoid NPE inside vendor library
@@ -120,6 +120,8 @@ public class MultiToolAgent {
                 System.err.println("Warning: failed to inject .env variables: " + e.getMessage());
             }
         }
+        ROOT_AGENT = initAgent();
+
         InMemoryRunner runner = new InMemoryRunner(ROOT_AGENT);
 
         Session session =
