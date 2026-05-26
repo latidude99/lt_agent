@@ -34,6 +34,14 @@ public class AgentCliRunner {
             }
         }
 
+        // Ensure an API key is present to avoid an NPE inside the vendor client
+        String gKeyEnv = System.getenv("GOOGLE_API_KEY");
+        String gemEnv = System.getenv("GEMINI_API_KEY");
+        String apiKeyEnv = (gKeyEnv != null && !gKeyEnv.isBlank()) ? gKeyEnv : gemEnv;
+        if (apiKeyEnv == null || apiKeyEnv.isBlank()) {
+            throw new IllegalArgumentException("Set GOOGLE_API_KEY or GEMINI_API_KEY in the environment before running");
+        }
+
         RunConfig runConfig = RunConfig.builder().build();
         InMemoryRunner runner = new InMemoryRunner(HelloTimeAgent.ROOT_AGENT);
 
