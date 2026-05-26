@@ -44,10 +44,6 @@
                 <version>3.1.0</version>
                 <configuration>
                     <mainClass>com.example.agent.AgentCliRunner</mainClass>
-                    <fork>true</fork>
-                    <jvmArgs>
-                        <jvmArg>--add-opens=java.base/java.lang=ALL-UNNAMED</jvmArg>
-                    </jvmArgs>
                 </configuration>
             </plugin>
         </plugins>
